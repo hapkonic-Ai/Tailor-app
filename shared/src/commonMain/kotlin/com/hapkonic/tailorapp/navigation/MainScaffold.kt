@@ -1,7 +1,7 @@
 package com.hapkonic.tailorapp.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
@@ -35,7 +35,7 @@ fun MainScaffold(currentUser: AppUser?, navigator: AppNavigator) {
     val isAdmin = currentUser?.role == UserRole.ADMIN
 
     val navItems = buildList {
-        add(NavItem("Dashboard", Icons.Default.Dashboard, Screen.Dashboard))
+        add(NavItem("Dashboard", Icons.Default.Home, Screen.Dashboard))
         if (isAdmin) add(NavItem("Customers", Icons.Default.Group, Screen.CustomerList))
         add(NavItem("Orders", Icons.Default.List, Screen.OrderList))
         if (isAdmin) add(NavItem("Tailors", Icons.Default.Person, Screen.TailorList))
