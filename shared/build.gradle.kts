@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
+            // ViewModel
+            implementation(libs.lifecycle.viewmodel)
+
             // Kotlinx
             implementation(libs.kotlinx.coroutines)
             implementation(libs.kotlinx.serialization)

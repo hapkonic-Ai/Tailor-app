@@ -1,8 +1,10 @@
 package com.hapkonic.tailorapp.di
 
 import com.hapkonic.tailorapp.data.local.DatabaseDriverFactory
+import com.hapkonic.tailorapp.data.remote.FirebaseAuthService
 import com.hapkonic.tailorapp.data.remote.FirebaseStorageService
 import com.hapkonic.tailorapp.data.remote.FirestoreService
+import com.hapkonic.tailorapp.data.repository.AuthRepositoryImpl
 import com.hapkonic.tailorapp.data.repository.CustomerRepositoryImpl
 import com.hapkonic.tailorapp.data.repository.MeasurementRepositoryImpl
 import com.hapkonic.tailorapp.data.repository.OrderRepositoryImpl
@@ -11,13 +13,20 @@ import com.hapkonic.tailorapp.data.sync.ConflictResolver
 import com.hapkonic.tailorapp.data.sync.SyncManager
 import com.hapkonic.tailorapp.data.sync.SyncQueue
 import com.hapkonic.tailorapp.db.AppDatabase
+import com.hapkonic.tailorapp.domain.auth.RoleGuard
+import com.hapkonic.tailorapp.domain.repository.AuthRepository
 import com.hapkonic.tailorapp.domain.repository.CustomerRepository
 import com.hapkonic.tailorapp.domain.repository.MeasurementRepository
 import com.hapkonic.tailorapp.domain.repository.OrderRepository
 import com.hapkonic.tailorapp.domain.repository.TailorRepository
+import com.hapkonic.tailorapp.domain.usecase.GetCurrentUserUseCase
+import com.hapkonic.tailorapp.domain.usecase.SignInUseCase
+import com.hapkonic.tailorapp.domain.usecase.SignOutUseCase
+import com.hapkonic.tailorapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 /**
@@ -25,8 +34,8 @@ import org.koin.dsl.module
  * Platform-specific bindings (DatabaseDriverFactory, NetworkMonitor) live in [platformModule].
  *
  * Phase 2: Database, Repositories, SyncManager, RemoteServices
- * Phase 3: AuthRepository, RoleGuard (added then)
- * Phase 4: Use Cases, ViewModels (added then)
+ * Phase 3: AuthRepository, RoleGuard, Auth use cases, LoginViewModel
+ * Phase 4: Feature use cases, ViewModels (added then)
  */
 val appModule = module {
 
@@ -37,6 +46,7 @@ val appModule = module {
     // ── Remote Services ───────────────────────────────────────────────────────
     single { FirestoreService() }
     single { FirebaseStorageService() }
+    single { FirebaseAuthService() }
 
     // ── Sync Engine ───────────────────────────────────────────────────────────
     single { ConflictResolver() }
@@ -56,7 +66,16 @@ val appModule = module {
     single<OrderRepository>       { OrderRepositoryImpl(get(), get()) }
     single<MeasurementRepository> { MeasurementRepositoryImpl(get(), get()) }
     single<TailorRepository>      { TailorRepositoryImpl(get(), get()) }
+    single<AuthRepository>        { AuthRepositoryImpl(get()) }
 
-    // Phase 3+: AuthRepository, RoleGuard
-    // Phase 4+: Use cases, ViewModels
+    // ── Auth Domain ───────────────────────────────────────────────────────────
+    single { RoleGuard() }
+    single { SignInUseCase(get()) }
+    single { SignOutUseCase(get()) }
+    single { GetCurrentUserUseCase(get()) }
+
+    // ── ViewModels ────────────────────────────────────────────────────────────
+    viewModel { LoginViewModel(get(), get()) }
+
+    // Phase 4+: Feature use cases, ViewModels
 }
