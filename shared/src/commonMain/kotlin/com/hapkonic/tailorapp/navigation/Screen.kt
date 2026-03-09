@@ -26,4 +26,8 @@ sealed class Screen {
     // Tailor
     object TailorList : Screen()
     data class TailorOrders(val tailorId: String) : Screen()
+    object TailorForm : Screen()
+
+    // Profile
+    object Profile : Screen()
 }

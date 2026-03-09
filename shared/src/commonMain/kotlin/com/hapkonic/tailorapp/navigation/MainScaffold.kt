@@ -1,6 +1,7 @@
 package com.hapkonic.tailorapp.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.List
@@ -25,6 +26,8 @@ import com.hapkonic.tailorapp.presentation.order.OrderDetailScreen
 import com.hapkonic.tailorapp.presentation.order.OrderListScreen
 import com.hapkonic.tailorapp.presentation.dashboard.RevenueScreen
 import com.hapkonic.tailorapp.presentation.search.SearchScreen
+import com.hapkonic.tailorapp.presentation.profile.ProfileScreen
+import com.hapkonic.tailorapp.presentation.tailor.TailorFormScreen
 import com.hapkonic.tailorapp.presentation.tailor.TailorListScreen
 import com.hapkonic.tailorapp.presentation.tailor.TailorOrdersScreen
 
@@ -40,6 +43,7 @@ fun MainScaffold(currentUser: AppUser?, navigator: AppNavigator) {
         add(NavItem("Orders", Icons.Default.List, Screen.OrderList))
         if (isAdmin) add(NavItem("Tailors", Icons.Default.Person, Screen.TailorList))
         add(NavItem("Search", Icons.Default.Search, Screen.Search))
+        add(NavItem("Profile", Icons.Default.AccountCircle, Screen.Profile))
     }
 
     // Determine currently selected tab (match by root screen type)
@@ -72,8 +76,10 @@ fun MainScaffold(currentUser: AppUser?, navigator: AppNavigator) {
             is Screen.MeasurementForm -> MeasurementFormScreen(screen.customerId, screen.measurementId)
             is Screen.TailorList     -> TailorListScreen()
             is Screen.TailorOrders   -> TailorOrdersScreen(screen.tailorId, currentUser = currentUser)
+            is Screen.TailorForm      -> TailorFormScreen()
             is Screen.Search         -> SearchScreen()
             is Screen.Revenue        -> RevenueScreen()
+            is Screen.Profile        -> ProfileScreen(currentUser = currentUser)
             else                     -> DashboardScreen()
         }
     }

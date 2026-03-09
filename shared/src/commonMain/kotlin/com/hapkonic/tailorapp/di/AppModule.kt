@@ -39,6 +39,7 @@ import com.hapkonic.tailorapp.domain.usecase.order.GetOrdersByStatusUseCase
 import com.hapkonic.tailorapp.domain.usecase.order.GetOrdersByTailorUseCase
 import com.hapkonic.tailorapp.domain.usecase.order.UpdateOrderStatusUseCase
 import com.hapkonic.tailorapp.domain.usecase.tailor.GetTailorsUseCase
+import com.hapkonic.tailorapp.domain.usecase.tailor.SaveTailorUseCase
 import com.hapkonic.tailorapp.domain.usecase.dashboard.GetDashboardMetricsUseCase
 import com.hapkonic.tailorapp.domain.usecase.dashboard.GetRevenueReportUseCase
 import com.hapkonic.tailorapp.presentation.customer.CustomerDetailViewModel
@@ -49,6 +50,7 @@ import com.hapkonic.tailorapp.presentation.measurement.MeasurementFormViewModel
 import com.hapkonic.tailorapp.presentation.order.CreateOrderViewModel
 import com.hapkonic.tailorapp.presentation.order.OrderDetailViewModel
 import com.hapkonic.tailorapp.presentation.order.OrderListViewModel
+import com.hapkonic.tailorapp.presentation.tailor.TailorFormViewModel
 import com.hapkonic.tailorapp.presentation.tailor.TailorListViewModel
 import com.hapkonic.tailorapp.presentation.tailor.TailorOrdersViewModel
 import com.hapkonic.tailorapp.presentation.dashboard.DashboardViewModel
@@ -128,6 +130,7 @@ val appModule = module {
 
     // ── Tailor Use Cases ──────────────────────────────────────────────────────
     single { GetTailorsUseCase(get()) }
+    single { SaveTailorUseCase(get()) }
 
     // ── Dashboard / Analytics Use Cases ───────────────────────────────────────
     single { GetDashboardMetricsUseCase(get(), get()) }
@@ -143,6 +146,7 @@ val appModule = module {
     viewModel { (orderId: String) -> OrderDetailViewModel(orderId, get(), get()) }
     viewModelOf(::MeasurementFormViewModel)
     viewModelOf(::TailorListViewModel)
+    viewModelOf(::TailorFormViewModel)
     viewModel { (tailorId: String) -> TailorOrdersViewModel(tailorId, get(), get()) }
     viewModelOf(::DashboardViewModel)
     viewModelOf(::RevenueViewModel)
