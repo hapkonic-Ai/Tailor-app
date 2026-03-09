@@ -35,6 +35,8 @@ import com.hapkonic.tailorapp.domain.usecase.order.GetOrdersByStatusUseCase
 import com.hapkonic.tailorapp.domain.usecase.order.GetOrdersByTailorUseCase
 import com.hapkonic.tailorapp.domain.usecase.order.UpdateOrderStatusUseCase
 import com.hapkonic.tailorapp.domain.usecase.tailor.GetTailorsUseCase
+import com.hapkonic.tailorapp.domain.usecase.dashboard.GetDashboardMetricsUseCase
+import com.hapkonic.tailorapp.domain.usecase.dashboard.GetRevenueReportUseCase
 import com.hapkonic.tailorapp.presentation.customer.CustomerDetailViewModel
 import com.hapkonic.tailorapp.presentation.customer.CustomerFormViewModel
 import com.hapkonic.tailorapp.presentation.customer.CustomerListViewModel
@@ -45,6 +47,9 @@ import com.hapkonic.tailorapp.presentation.order.OrderDetailViewModel
 import com.hapkonic.tailorapp.presentation.order.OrderListViewModel
 import com.hapkonic.tailorapp.presentation.tailor.TailorListViewModel
 import com.hapkonic.tailorapp.presentation.tailor.TailorOrdersViewModel
+import com.hapkonic.tailorapp.presentation.dashboard.DashboardViewModel
+import com.hapkonic.tailorapp.presentation.dashboard.RevenueViewModel
+import com.hapkonic.tailorapp.presentation.search.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -116,6 +121,10 @@ val appModule = module {
     // ── Tailor Use Cases ──────────────────────────────────────────────────────
     single { GetTailorsUseCase(get()) }
 
+    // ── Dashboard / Analytics Use Cases ───────────────────────────────────────
+    single { GetDashboardMetricsUseCase(get(), get()) }
+    single { GetRevenueReportUseCase(get()) }
+
     // ── ViewModels ────────────────────────────────────────────────────────────
     viewModel { LoginViewModel(get(), get()) }
     viewModelOf(::CustomerListViewModel)
@@ -127,4 +136,7 @@ val appModule = module {
     viewModelOf(::MeasurementFormViewModel)
     viewModelOf(::TailorListViewModel)
     viewModel { (tailorId: String) -> TailorOrdersViewModel(tailorId, get(), get()) }
+    viewModelOf(::DashboardViewModel)
+    viewModelOf(::RevenueViewModel)
+    viewModelOf(::SearchViewModel)
 }

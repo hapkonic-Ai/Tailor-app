@@ -5,6 +5,11 @@ sealed class Screen {
     // Auth
     object Login : Screen()
 
+    // Main tabs
+    object Dashboard : Screen()
+    object Search : Screen()
+    object Revenue : Screen()
+
     // Customer
     object CustomerList : Screen()
     data class CustomerDetail(val customerId: String) : Screen()
