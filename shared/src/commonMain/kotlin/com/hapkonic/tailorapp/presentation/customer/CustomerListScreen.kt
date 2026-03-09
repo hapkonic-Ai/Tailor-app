@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,6 +44,7 @@ fun CustomerListScreen(
     viewModel: CustomerListViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isSyncing by viewModel.isSyncing.collectAsState()
     val navigator = LocalNavigator.current
 
     Scaffold(
@@ -55,31 +57,38 @@ fun CustomerListScreen(
             }
         }
     ) { padding ->
-        Column(
+        PullToRefreshBox(
+            isRefreshing = isSyncing,
+            onRefresh = viewModel::refresh,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
         ) {
-            SearchBar(
-                query = uiState.query,
-                onQueryChange = viewModel::onQueryChange,
-                placeholder = "Search by name or phone",
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                SearchBar(
+                    query = uiState.query,
+                    onQueryChange = viewModel::onQueryChange,
+                    placeholder = "Search by name or phone",
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
 
-            when {
-                uiState.isLoading -> LoadingIndicator()
-                uiState.customers.isEmpty() -> EmptyState("No customers found")
-                else -> LazyColumn(
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(uiState.customers) { customer ->
-                        CustomerListItem(
-                            customer = customer,
-                            onClick = { navigator.navigate(Screen.CustomerDetail(customer.id)) }
-                        )
+                when {
+                    uiState.isLoading -> LoadingIndicator()
+                    uiState.customers.isEmpty() -> EmptyState("No customers found")
+                    else -> LazyColumn(
+                        contentPadding = PaddingValues(vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.customers, key = { it.id }) { customer ->
+                            CustomerListItem(
+                                customer = customer,
+                                onClick = { navigator.navigate(Screen.CustomerDetail(customer.id)) }
+                            )
+                        }
                     }
                 }
             }

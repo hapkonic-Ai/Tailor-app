@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,26 +35,33 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun TailorListScreen(viewModel: TailorListViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
+    val isSyncing by viewModel.isSyncing.collectAsState()
     val navigator = LocalNavigator.current
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Tailors") }) }
     ) { padding ->
-        when {
-            uiState.isLoading -> LoadingIndicator()
-            uiState.tailors.isEmpty() -> EmptyState("No tailors registered")
-            else -> LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(uiState.tailors) { tailor ->
-                    TailorItem(
-                        tailor = tailor,
-                        onClick = { navigator.navigate(Screen.TailorOrders(tailor.id)) }
-                    )
+        PullToRefreshBox(
+            isRefreshing = isSyncing,
+            onRefresh = viewModel::refresh,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            when {
+                uiState.isLoading -> LoadingIndicator()
+                uiState.tailors.isEmpty() -> EmptyState("No tailors registered")
+                else -> LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(uiState.tailors, key = { it.id }) { tailor ->
+                        TailorItem(
+                            tailor = tailor,
+                            onClick = { navigator.navigate(Screen.TailorOrders(tailor.id)) }
+                        )
+                    }
                 }
             }
         }

@@ -37,7 +37,7 @@ class SyncManager(
         networkMonitor.stopMonitoring()
     }
 
-    private suspend fun processQueue() {
+    suspend fun processQueue() {
         val pending = syncQueue.getPending()
 
         for (item in pending) {

@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,6 +47,7 @@ fun OrderListScreen(
     viewModel: OrderListViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isSyncing by viewModel.isSyncing.collectAsState()
     val navigator = LocalNavigator.current
 
     Scaffold(
@@ -58,37 +60,41 @@ fun OrderListScreen(
             }
         }
     ) { padding ->
-        Column(
+        PullToRefreshBox(
+            isRefreshing = isSyncing,
+            onRefresh = viewModel::refresh,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Status filter chips
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(OrderStatus.entries) { status ->
-                    FilterChip(
-                        selected = uiState.selectedStatus == status,
-                        onClick = { viewModel.filterByStatus(status) },
-                        label = { Text(status.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }) }
-                    )
-                }
-            }
-
-            when {
-                uiState.isLoading -> LoadingIndicator()
-                uiState.orders.isEmpty() -> EmptyState("No ${uiState.selectedStatus.name.lowercase()} orders")
-                else -> LazyColumn(
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Status filter chips
+                LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(uiState.orders) { order ->
-                        OrderListItem(
-                            order = order,
-                            onClick = { navigator.navigate(Screen.OrderDetail(order.id)) }
+                    items(OrderStatus.entries) { status ->
+                        FilterChip(
+                            selected = uiState.selectedStatus == status,
+                            onClick = { viewModel.filterByStatus(status) },
+                            label = { Text(status.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }) }
                         )
+                    }
+                }
+
+                when {
+                    uiState.isLoading -> LoadingIndicator()
+                    uiState.orders.isEmpty() -> EmptyState("No ${uiState.selectedStatus.name.lowercase()} orders")
+                    else -> LazyColumn(
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.orders, key = { it.id }) { order ->
+                            OrderListItem(
+                                order = order,
+                                onClick = { navigator.navigate(Screen.OrderDetail(order.id)) }
+                            )
+                        }
                     }
                 }
             }

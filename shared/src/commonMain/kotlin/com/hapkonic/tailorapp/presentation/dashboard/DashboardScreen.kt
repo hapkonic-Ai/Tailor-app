@@ -114,7 +114,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = koinViewModel()) {
                         )
                     }
                 } else {
-                    items(uiState.metrics.tailorWorkload) { workload ->
+                    items(uiState.metrics.tailorWorkload, key = { it.tailorName }) { workload ->
                         WorkloadRow(
                             name         = workload.tailorName,
                             activeOrders = workload.activeOrderCount
