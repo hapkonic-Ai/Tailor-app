@@ -1,5 +1,10 @@
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+val localProps = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.let { load(it) }
+}
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -88,6 +93,21 @@ android {
     compileSdk = 35
     defaultConfig {
         minSdk = 24
+        // Dev default: local storage. Override with USE_FIREBASE_STORAGE=true in local.properties.
+        buildConfigField(
+            "boolean",
+            "USE_FIREBASE_STORAGE",
+            localProps.getProperty("USE_FIREBASE_STORAGE", "false")
+        )
+    }
+    buildTypes {
+        release {
+            // Production builds always use Firebase Storage.
+            buildConfigField("boolean", "USE_FIREBASE_STORAGE", "true")
+        }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
