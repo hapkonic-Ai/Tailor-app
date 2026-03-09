@@ -2,6 +2,7 @@ package com.hapkonic.tailorapp
 
 import androidx.compose.ui.window.ComposeUIViewController
 import com.hapkonic.tailorapp.di.appModule
+import com.hapkonic.tailorapp.di.platformModule
 import org.koin.core.context.startKoin
 
 /**
@@ -11,7 +12,7 @@ import org.koin.core.context.startKoin
 fun MainViewController() = ComposeUIViewController(
     configure = {
         startKoin {
-            modules(appModule)
+            modules(platformModule, appModule)
         }
     }
 ) {

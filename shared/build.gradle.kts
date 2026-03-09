@@ -55,10 +55,10 @@ kotlin {
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
 
-            // Firebase (Phase 2 — uncomment after adding google-services.json / GoogleService-Info.plist)
-            // implementation(libs.firebase.firestore)
-            // implementation(libs.firebase.auth)
-            // implementation(libs.firebase.storage)
+            // Firebase — requires google-services.json (Android) + GoogleService-Info.plist (iOS)
+            implementation(libs.firebase.firestore)
+            implementation(libs.firebase.auth)
+            implementation(libs.firebase.storage)
         }
 
         androidMain.dependencies {

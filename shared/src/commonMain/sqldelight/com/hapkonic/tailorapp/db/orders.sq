@@ -1,0 +1,59 @@
+CREATE TABLE IF NOT EXISTS orders (
+    id               TEXT    NOT NULL PRIMARY KEY,
+    customerId       TEXT    NOT NULL,
+    orderDate        INTEGER NOT NULL,
+    deliveryDate     INTEGER NOT NULL,
+    status           TEXT    NOT NULL,
+    assignedTailorId TEXT    NOT NULL,
+    price            REAL    NOT NULL,
+    clothImageUrl    TEXT,
+    designImageUrl   TEXT,
+    notes            TEXT,
+    updatedAt        INTEGER NOT NULL,
+    FOREIGN KEY (customerId)       REFERENCES customers(id),
+    FOREIGN KEY (assignedTailorId) REFERENCES tailors(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_orders_customer        ON orders(customerId);
+CREATE INDEX IF NOT EXISTS idx_orders_status          ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_tailor          ON orders(assignedTailorId);
+CREATE INDEX IF NOT EXISTS idx_orders_delivery        ON orders(deliveryDate);
+CREATE INDEX IF NOT EXISTS idx_orders_customer_status ON orders(customerId, status);
+CREATE INDEX IF NOT EXISTS idx_orders_tailor_delivery ON orders(assignedTailorId, deliveryDate);
+
+getByStatus:
+SELECT * FROM orders WHERE status = :status ORDER BY deliveryDate ASC LIMIT :limit OFFSET :offset;
+
+getByCustomer:
+SELECT * FROM orders WHERE customerId = :customerId ORDER BY orderDate DESC;
+
+getByTailor:
+SELECT * FROM orders WHERE assignedTailorId = :tailorId ORDER BY deliveryDate ASC;
+
+getDueToday:
+SELECT * FROM orders WHERE deliveryDate >= :startOfDay AND deliveryDate < :endOfDay;
+
+getById:
+SELECT * FROM orders WHERE id = :id;
+
+getInDateRange:
+SELECT * FROM orders WHERE orderDate >= :startDate AND orderDate <= :endDate ORDER BY orderDate DESC;
+
+countByStatus:
+SELECT status, COUNT(*) AS count FROM orders GROUP BY status;
+
+countByTailor:
+SELECT assignedTailorId, COUNT(*) AS count FROM orders WHERE status != 'DELIVERED' GROUP BY assignedTailorId;
+
+getModifiedSince:
+SELECT * FROM orders WHERE updatedAt > :since;
+
+insert:
+INSERT OR REPLACE INTO orders (id, customerId, orderDate, deliveryDate, status, assignedTailorId, price, clothImageUrl, designImageUrl, notes, updatedAt)
+VALUES (:id, :customerId, :orderDate, :deliveryDate, :status, :assignedTailorId, :price, :clothImageUrl, :designImageUrl, :notes, :updatedAt);
+
+updateStatus:
+UPDATE orders SET status = :status, updatedAt = :updatedAt WHERE id = :id;
+
+delete:
+DELETE FROM orders WHERE id = :id;

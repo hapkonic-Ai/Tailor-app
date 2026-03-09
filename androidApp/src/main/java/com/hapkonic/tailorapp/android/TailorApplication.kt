@@ -2,6 +2,7 @@ package com.hapkonic.tailorapp.android
 
 import android.app.Application
 import com.hapkonic.tailorapp.di.appModule
+import com.hapkonic.tailorapp.di.platformModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -13,7 +14,7 @@ class TailorApplication : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@TailorApplication)
-            modules(appModule)
+            modules(platformModule, appModule)
         }
     }
 }

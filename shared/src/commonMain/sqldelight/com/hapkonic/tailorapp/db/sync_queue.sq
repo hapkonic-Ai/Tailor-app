@@ -1,0 +1,34 @@
+CREATE TABLE IF NOT EXISTS sync_queue (
+    entityId   TEXT    NOT NULL,
+    entityType TEXT    NOT NULL,
+    action     TEXT    NOT NULL,
+    timestamp  INTEGER NOT NULL,
+    synced     INTEGER NOT NULL DEFAULT 0,
+    retryCount INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (entityId, entityType, action)
+);
+
+getPending:
+SELECT * FROM sync_queue WHERE synced = 0 ORDER BY timestamp ASC;
+
+insert:
+INSERT OR REPLACE INTO sync_queue (entityId, entityType, action, timestamp, synced, retryCount)
+VALUES (:entityId, :entityType, :action, :timestamp, 0, 0);
+
+markSynced:
+UPDATE sync_queue SET synced = 1
+WHERE entityId = :entityId AND entityType = :entityType AND action = :action;
+
+incrementRetry:
+UPDATE sync_queue SET retryCount = retryCount + 1
+WHERE entityId = :entityId AND entityType = :entityType AND action = :action;
+
+getRetryCount:
+SELECT retryCount FROM sync_queue
+WHERE entityId = :entityId AND entityType = :entityType AND action = :action;
+
+deleteSynced:
+DELETE FROM sync_queue WHERE synced = 1;
+
+deleteItem:
+DELETE FROM sync_queue WHERE entityId = :entityId AND entityType = :entityType AND action = :action;

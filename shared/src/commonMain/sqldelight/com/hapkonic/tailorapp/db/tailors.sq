@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS tailors (
+    id             TEXT    NOT NULL PRIMARY KEY,
+    name           TEXT    NOT NULL,
+    phone          TEXT    NOT NULL,
+    specialization TEXT    NOT NULL,
+    activeOrders   INTEGER NOT NULL DEFAULT 0,
+    updatedAt      INTEGER NOT NULL
+);
+
+getAll:
+SELECT * FROM tailors ORDER BY name ASC;
+
+getById:
+SELECT * FROM tailors WHERE id = :id;
+
+getModifiedSince:
+SELECT * FROM tailors WHERE updatedAt > :since;
+
+insert:
+INSERT OR REPLACE INTO tailors (id, name, phone, specialization, activeOrders, updatedAt)
+VALUES (:id, :name, :phone, :specialization, :activeOrders, :updatedAt);
+
+updateActiveOrders:
+UPDATE tailors SET activeOrders = :activeOrders, updatedAt = :updatedAt WHERE id = :id;
+
+delete:
+DELETE FROM tailors WHERE id = :id;

@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS measurements (
+    id           TEXT NOT NULL PRIMARY KEY,
+    customerId   TEXT NOT NULL,
+    shoulder     REAL NOT NULL,
+    chest        REAL NOT NULL,
+    waist        REAL NOT NULL,
+    hip          REAL NOT NULL,
+    sleeveLength REAL NOT NULL,
+    shirtLength  REAL NOT NULL,
+    pantLength   REAL NOT NULL,
+    notes        TEXT,
+    updatedAt    INTEGER NOT NULL,
+    FOREIGN KEY (customerId) REFERENCES customers(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_measurements_customer ON measurements(customerId);
+
+getByCustomer:
+SELECT * FROM measurements WHERE customerId = :customerId ORDER BY updatedAt DESC;
+
+getById:
+SELECT * FROM measurements WHERE id = :id;
+
+getModifiedSince:
+SELECT * FROM measurements WHERE updatedAt > :since;
+
+insert:
+INSERT OR REPLACE INTO measurements (id, customerId, shoulder, chest, waist, hip, sleeveLength, shirtLength, pantLength, notes, updatedAt)
+VALUES (:id, :customerId, :shoulder, :chest, :waist, :hip, :sleeveLength, :shirtLength, :pantLength, :notes, :updatedAt);
+
+delete:
+DELETE FROM measurements WHERE id = :id;

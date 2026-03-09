@@ -1,0 +1,40 @@
+CREATE TABLE IF NOT EXISTS customers (
+    id           TEXT    NOT NULL PRIMARY KEY,
+    name         TEXT    NOT NULL,
+    phone        TEXT    NOT NULL,
+    address      TEXT    NOT NULL,
+    createdAt    INTEGER NOT NULL,
+    lastOrderDate INTEGER,
+    updatedAt    INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_customers_name  ON customers(name);
+CREATE INDEX IF NOT EXISTS idx_customers_phone ON customers(phone);
+
+getAll:
+SELECT * FROM customers ORDER BY name ASC LIMIT :limit OFFSET :offset;
+
+getById:
+SELECT * FROM customers WHERE id = :id;
+
+searchByName:
+SELECT * FROM customers WHERE name LIKE '%' || :query || '%' ORDER BY name ASC LIMIT 20;
+
+searchByPhone:
+SELECT * FROM customers WHERE phone LIKE '%' || :query || '%' LIMIT 20;
+
+getCount:
+SELECT COUNT(*) FROM customers;
+
+getModifiedSince:
+SELECT * FROM customers WHERE updatedAt > :since;
+
+insert:
+INSERT OR REPLACE INTO customers (id, name, phone, address, createdAt, lastOrderDate, updatedAt)
+VALUES (:id, :name, :phone, :address, :createdAt, :lastOrderDate, :updatedAt);
+
+updateLastOrderDate:
+UPDATE customers SET lastOrderDate = :lastOrderDate, updatedAt = :updatedAt WHERE id = :id;
+
+delete:
+DELETE FROM customers WHERE id = :id;
