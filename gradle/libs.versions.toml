@@ -14,6 +14,7 @@ lifecycle-viewmodel = "2.8.7"
 google-services = "4.4.2"
 detekt = "1.23.7"
 ktlint = "12.1.2"
+turbine = "1.2.0"
 
 [libraries]
 # SQLDelight
@@ -42,6 +43,10 @@ kotlinx-datetime      = { module = "org.jetbrains.kotlinx:kotlinx-datetime",    
 firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase-kotlin" }
 firebase-auth      = { module = "dev.gitlive:firebase-auth",      version.ref = "firebase-kotlin" }
 firebase-storage   = { module = "dev.gitlive:firebase-storage",   version.ref = "firebase-kotlin" }
+
+# Test
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+turbine                  = { module = "app.cash.turbine:turbine",                       version.ref = "turbine" }
 
 # AndroidX
 androidx-activity-compose = { module = "androidx.activity:activity-compose",           version.ref = "androidx-activity-compose" }
