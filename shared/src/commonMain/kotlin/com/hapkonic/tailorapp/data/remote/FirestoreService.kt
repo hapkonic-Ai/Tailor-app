@@ -14,13 +14,13 @@ import dev.gitlive.firebase.firestore.firestore
  *  - `startAfter(lastDoc)` for cursor-based pagination
  *  - Filters on every collection scan — no full-collection reads
  */
-class FirestoreService {
+class FirestoreService : IFirestoreService {
 
     private val db = Firebase.firestore
 
     // ── Customers ─────────────────────────────────────────────────────────────
 
-    suspend fun getCustomers(
+    override suspend fun getCustomers(
         limit: Long = 20,
         lastDoc: DocumentSnapshot? = null
     ): List<CustomerDto> {
@@ -31,19 +31,19 @@ class FirestoreService {
         return snapshot.documents.map { it.data() }
     }
 
-    suspend fun getCustomerById(id: String): CustomerDto? =
+    override suspend fun getCustomerById(id: String): CustomerDto? =
         db.collection("customers").document(id).get()
             .takeIf { it.exists }?.data()
 
-    suspend fun upsertCustomer(dto: CustomerDto) =
+    override suspend fun upsertCustomer(dto: CustomerDto) =
         db.collection("customers").document(dto.id).set(dto)
 
-    suspend fun deleteCustomer(id: String) =
+    override suspend fun deleteCustomer(id: String) =
         db.collection("customers").document(id).delete()
 
     // ── Orders ────────────────────────────────────────────────────────────────
 
-    suspend fun getOrdersByStatus(
+    override suspend fun getOrdersByStatus(
         status: String,
         limit: Long = 20,
         lastDoc: DocumentSnapshot? = null
@@ -56,21 +56,21 @@ class FirestoreService {
         return snapshot.documents.map { it.data() }
     }
 
-    suspend fun getOrdersByCustomer(customerId: String): List<OrderDto> =
+    override suspend fun getOrdersByCustomer(customerId: String): List<OrderDto> =
         db.collection("orders")
             .where { "customerId" equalTo customerId }
             .orderBy("orderDate")
             .limit(100)
             .get().documents.map { it.data() }
 
-    suspend fun getOrdersByTailor(tailorId: String): List<OrderDto> =
+    override suspend fun getOrdersByTailor(tailorId: String): List<OrderDto> =
         db.collection("orders")
             .where { "assignedTailorId" equalTo tailorId }
             .orderBy("deliveryDate")
             .limit(100)
             .get().documents.map { it.data() }
 
-    suspend fun getOrdersDueToday(startOfDay: Long, endOfDay: Long): List<OrderDto> =
+    override suspend fun getOrdersDueToday(startOfDay: Long, endOfDay: Long): List<OrderDto> =
         db.collection("orders")
             .where {
                 "deliveryDate" greaterThanOrEqualTo startOfDay
@@ -79,42 +79,42 @@ class FirestoreService {
             .limit(50)
             .get().documents.map { it.data() }
 
-    suspend fun getOrderById(id: String): OrderDto? =
+    override suspend fun getOrderById(id: String): OrderDto? =
         db.collection("orders").document(id).get()
             .takeIf { it.exists }?.data()
 
-    suspend fun upsertOrder(dto: OrderDto) =
+    override suspend fun upsertOrder(dto: OrderDto) =
         db.collection("orders").document(dto.id).set(dto)
 
-    suspend fun deleteOrder(id: String) =
+    override suspend fun deleteOrder(id: String) =
         db.collection("orders").document(id).delete()
 
     // ── Measurements ──────────────────────────────────────────────────────────
 
-    suspend fun getMeasurementsByCustomer(customerId: String): List<MeasurementDto> =
+    override suspend fun getMeasurementsByCustomer(customerId: String): List<MeasurementDto> =
         db.collection("measurements")
             .where { "customerId" equalTo customerId }
             .orderBy("updatedAt")
             .limit(20)
             .get().documents.map { it.data() }
 
-    suspend fun upsertMeasurement(dto: MeasurementDto) =
+    override suspend fun upsertMeasurement(dto: MeasurementDto) =
         db.collection("measurements").document(dto.id).set(dto)
 
     // ── Tailors ───────────────────────────────────────────────────────────────
 
-    suspend fun getAllTailors(): List<TailorDto> =
+    override suspend fun getAllTailors(): List<TailorDto> =
         db.collection("tailors")
             .orderBy("name")
             .limit(200)
             .get().documents.map { it.data() }
 
-    suspend fun upsertTailor(dto: TailorDto) =
+    override suspend fun upsertTailor(dto: TailorDto) =
         db.collection("tailors").document(dto.id).set(dto)
 
     // ── Delta Sync ────────────────────────────────────────────────────────────
 
-    suspend fun getModifiedSince(collection: String, since: Long): List<Map<String, Any>> =
+    override suspend fun getModifiedSince(collection: String, since: Long): List<Map<String, Any>> =
         db.collection(collection)
             .where { "updatedAt" greaterThan since }
             .limit(500)

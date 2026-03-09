@@ -1,9 +1,11 @@
 package com.hapkonic.tailorapp.di
 
 import com.hapkonic.tailorapp.data.local.DatabaseDriverFactory
+import com.hapkonic.tailorapp.data.local.LocalFirestoreService
 import com.hapkonic.tailorapp.data.local.LocalStorageService
 import com.hapkonic.tailorapp.data.remote.FirebaseStorageService
 import com.hapkonic.tailorapp.data.remote.FirestoreService
+import com.hapkonic.tailorapp.data.remote.IFirestoreService
 import com.hapkonic.tailorapp.data.remote.StorageService
 import com.hapkonic.tailorapp.data.remote.LocalAuthService
 import com.hapkonic.tailorapp.data.repository.AuthRepositoryImpl
@@ -72,7 +74,9 @@ val appModule = module {
     single { SyncQueue(get()) }
 
     // ── Remote Services ───────────────────────────────────────────────────────
-    single { FirestoreService() }
+    single<IFirestoreService> {
+        if (useFirebaseStorage) FirestoreService() else LocalFirestoreService()
+    }
     single<StorageService> {
         if (useFirebaseStorage) FirebaseStorageService() else LocalStorageService()
     }

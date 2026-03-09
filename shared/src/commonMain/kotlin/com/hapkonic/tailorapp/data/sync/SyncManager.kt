@@ -2,7 +2,7 @@ package com.hapkonic.tailorapp.data.sync
 
 import com.hapkonic.tailorapp.data.mapper.toDomain
 import com.hapkonic.tailorapp.data.mapper.toDto
-import com.hapkonic.tailorapp.data.remote.FirestoreService
+import com.hapkonic.tailorapp.data.remote.IFirestoreService
 import com.hapkonic.tailorapp.data.remote.dto.CustomerDto
 import com.hapkonic.tailorapp.data.remote.dto.MeasurementDto
 import com.hapkonic.tailorapp.data.remote.dto.OrderDto
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class SyncManager(
     private val db: AppDatabase,
-    private val firestore: FirestoreService,
+    private val firestore: IFirestoreService,
     private val syncQueue: SyncQueue,
     private val networkMonitor: NetworkMonitor,
     private val conflictResolver: ConflictResolver,
