@@ -14,5 +14,5 @@ data class Order(
     val clothImageUrl: String?,
     val designImageUrl: String?,
     val notes: String?,
-    val updatedAt: Long
+    override val updatedAt: Long
 ) : HasTimestamp

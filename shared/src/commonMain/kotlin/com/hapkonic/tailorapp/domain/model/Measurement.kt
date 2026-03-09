@@ -14,5 +14,5 @@ data class Measurement(
     val shirtLength: Double,
     val pantLength: Double,
     val notes: String?,
-    val updatedAt: Long
+    override val updatedAt: Long
 ) : HasTimestamp

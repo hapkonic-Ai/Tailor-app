@@ -9,5 +9,5 @@ data class Tailor(
     val phone: String,
     val specialization: String,
     val activeOrders: Int,
-    val updatedAt: Long
+    override val updatedAt: Long
 ) : HasTimestamp

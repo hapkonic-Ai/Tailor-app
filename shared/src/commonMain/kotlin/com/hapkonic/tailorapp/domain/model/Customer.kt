@@ -10,5 +10,5 @@ data class Customer(
     val address: String,
     val createdAt: Long,
     val lastOrderDate: Long?,
-    val updatedAt: Long
+    override val updatedAt: Long
 ) : HasTimestamp
