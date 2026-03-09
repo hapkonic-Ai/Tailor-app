@@ -21,8 +21,8 @@ class FirestoreService : IFirestoreService {
     // ── Customers ─────────────────────────────────────────────────────────────
 
     override suspend fun getCustomers(
-        limit: Long = 20,
-        lastDoc: DocumentSnapshot? = null
+        limit: Long,
+        lastDoc: DocumentSnapshot?
     ): List<CustomerDto> {
         val query = db.collection("customers")
             .orderBy("name")
@@ -45,8 +45,8 @@ class FirestoreService : IFirestoreService {
 
     override suspend fun getOrdersByStatus(
         status: String,
-        limit: Long = 20,
-        lastDoc: DocumentSnapshot? = null
+        limit: Long,
+        lastDoc: DocumentSnapshot?
     ): List<OrderDto> {
         val query = db.collection("orders")
             .where { "status" equalTo status }
