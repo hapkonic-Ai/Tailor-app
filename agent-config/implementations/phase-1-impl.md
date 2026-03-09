@@ -46,7 +46,7 @@
 | Commit Hash | Message | Date |
 |-------------|---------|------|
 | 1453b8a | chore: scaffold multiphase project tracking structure | 2026-03-09 |
-| *(next)* | feat(phase-1): KMP project scaffold, Gradle, CI, Firestore rules | 2026-03-09 |
+| ec3c842 | feat(phase-1): KMP project scaffold, Gradle, CI, Firestore rules | 2026-03-09 |
 
 ## Deviations from Plan
 
