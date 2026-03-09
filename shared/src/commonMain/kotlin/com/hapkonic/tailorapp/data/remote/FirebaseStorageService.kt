@@ -18,7 +18,7 @@ class FirebaseStorageService {
      */
     suspend fun uploadImage(storagePath: String, imageBytes: ByteArray): String {
         val ref = storage.reference(storagePath)
-        ref.putBytes(imageBytes)
+        ref.put(imageBytes)
         return ref.getDownloadUrl()
     }
 
