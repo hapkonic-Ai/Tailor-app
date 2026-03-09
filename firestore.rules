@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.role == "admin";
+    }
+
+    function isTailor() {
+      return request.auth != null && request.auth.token.role == "tailor";
+    }
+
+    function isAssignedTailor(orderId) {
+      return request.auth != null
+        && resource.data.assignedTailorId == request.auth.uid;
+    }
+
+    // ── Default: deny all ─────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ── Customers ─────────────────────────────────────────────────
+    match /customers/{customerId} {
+      allow read:  if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ── Orders ────────────────────────────────────────────────────
+    match /orders/{orderId} {
+      allow read:   if isAuthenticated();
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
+
+      // Admin: full update
+      allow update: if isAdmin();
+
+      // Tailor: can only update `status` and `updatedAt` on their own orders
+      allow update: if isTailor()
+                    && resource.data.assignedTailorId == request.auth.uid
+                    && request.resource.data.diff(resource.data)
+                         .affectedKeys()
+                         .hasOnly(['status', 'updatedAt']);
+    }
+
+    // ── Measurements ──────────────────────────────────────────────
+    match /measurements/{measurementId} {
+      allow read:  if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ── Tailors ───────────────────────────────────────────────────
+    match /tailors/{tailorId} {
+      allow read:  if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ── Sync metadata (internal, admin-only) ──────────────────────
+    match /sync_metadata/{doc} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
