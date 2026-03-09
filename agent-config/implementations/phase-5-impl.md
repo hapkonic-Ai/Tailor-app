@@ -28,7 +28,7 @@
 
 | Commit Hash | Message | Date |
 |-------------|---------|------|
-| — | feat(phase-5): dashboard, analytics, revenue & search | 2026-03-09 |
+| `84b9bc3` | feat(phase-5): dashboard, analytics, revenue & global search | 2026-03-09 |
 
 ## Deviations from Plan
 
