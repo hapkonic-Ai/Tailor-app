@@ -60,8 +60,8 @@ kotlin {
 
             // Firebase — requires google-services.json (Android) + GoogleService-Info.plist (iOS)
             implementation(libs.firebase.firestore)
-            implementation(libs.firebase.auth)
             implementation(libs.firebase.storage)
+            // firebase-auth removed — using local credential auth (LocalAuthService)
         }
 
         androidMain.dependencies {

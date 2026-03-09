@@ -1,12 +1,12 @@
 package com.hapkonic.tailorapp.data.repository
 
-import com.hapkonic.tailorapp.data.remote.FirebaseAuthService
+import com.hapkonic.tailorapp.data.remote.LocalAuthService
 import com.hapkonic.tailorapp.domain.model.AppUser
 import com.hapkonic.tailorapp.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl(
-    private val authService: FirebaseAuthService
+    private val authService: LocalAuthService
 ) : AuthRepository {
 
     override val currentUser: Flow<AppUser?> = authService.currentUserFlow
