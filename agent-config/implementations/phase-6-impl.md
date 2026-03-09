@@ -30,7 +30,7 @@
 
 | Commit Hash | Message | Date |
 |-------------|---------|------|
-| — | feat(phase-6): dark mode, pull-to-refresh, stable keys, ImageCompressor, CsvExporter | 2026-03-09 |
+| `83024be` | feat(phase-6): dark mode, pull-to-refresh, stable keys, ImageCompressor, CsvExporter | 2026-03-09 |
 
 ## Deviations from Plan
 
