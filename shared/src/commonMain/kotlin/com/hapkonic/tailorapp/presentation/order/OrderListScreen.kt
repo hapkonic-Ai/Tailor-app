@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import com.hapkonic.tailorapp.domain.model.AppUser
 import com.hapkonic.tailorapp.domain.model.Order
 import com.hapkonic.tailorapp.domain.model.OrderStatus
-import com.hapkonic.tailorapp.domain.model.UserRole
 import com.hapkonic.tailorapp.navigation.LocalNavigator
 import com.hapkonic.tailorapp.navigation.Screen
 import com.hapkonic.tailorapp.ui.components.EmptyState
@@ -53,10 +52,8 @@ fun OrderListScreen(
     Scaffold(
         topBar = { TopAppBar(title = { Text("Orders") }) },
         floatingActionButton = {
-            if (currentUser?.role == UserRole.ADMIN) {
-                FloatingActionButton(onClick = { navigator.navigate(Screen.CreateOrder()) }) {
-                    Icon(Icons.Default.Add, contentDescription = "Create order")
-                }
+            FloatingActionButton(onClick = { navigator.navigate(Screen.CreateOrder()) }) {
+                Icon(Icons.Default.Add, contentDescription = "Create order")
             }
         }
     ) { padding ->

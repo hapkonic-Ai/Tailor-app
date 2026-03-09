@@ -7,12 +7,15 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hapkonic.tailorapp.domain.model.AppUser
 import com.hapkonic.tailorapp.domain.model.UserRole
@@ -64,7 +67,8 @@ fun MainScaffold(currentUser: AppUser?, navigator: AppNavigator) {
                 }
             }
         }
-    ) { _ ->
+    ) { padding ->
+        Box(modifier = Modifier.padding(bottom = padding.calculateBottomPadding())) {
         when (val screen = navigator.current) {
             is Screen.Dashboard      -> DashboardScreen()
             is Screen.CustomerList   -> CustomerListScreen(currentUser = currentUser)
@@ -82,5 +86,6 @@ fun MainScaffold(currentUser: AppUser?, navigator: AppNavigator) {
             is Screen.Profile        -> ProfileScreen(currentUser = currentUser)
             else                     -> DashboardScreen()
         }
+        } // end Box
     }
 }
