@@ -21,6 +21,8 @@ class LocalAuthService {
     private val _currentUser = MutableStateFlow<AppUser?>(null)
     val currentUserFlow: Flow<AppUser?> = _currentUser.asStateFlow()
 
+    private var lastSignedInUser: AppUser? = null
+
     // email.lowercase() → Pair(password, role)
     private val credentials = mutableMapOf(
         "admin@tailorapp.com"  to Pair("admin123",  UserRole.ADMIN),
@@ -43,6 +45,14 @@ class LocalAuthService {
             displayName = key.substringBefore("@").replaceFirstChar { it.uppercase() },
             role        = role
         )
+        _currentUser.value = user
+        lastSignedInUser = user
+        return user
+    }
+
+    /** Restores the last session without re-entering credentials (called after biometric success). */
+    fun signInWithBiometric(): AppUser? {
+        val user = lastSignedInUser ?: return null
         _currentUser.value = user
         return user
     }

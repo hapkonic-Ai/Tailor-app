@@ -17,4 +17,6 @@ class AuthRepositoryImpl(
     override suspend fun signOut() = authService.signOut()
 
     override suspend fun getCurrentUser(): AppUser? = authService.getCurrentUser()
+
+    override suspend fun signInWithBiometric(): AppUser? = authService.signInWithBiometric()
 }

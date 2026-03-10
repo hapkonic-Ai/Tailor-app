@@ -19,4 +19,10 @@ interface AuthRepository {
 
     /** Returns the current user synchronously, or null if not signed in. */
     suspend fun getCurrentUser(): AppUser?
+
+    /**
+     * Restore the last signed-in session after a successful biometric check.
+     * Returns null if no previous session exists (user must sign in with password first).
+     */
+    suspend fun signInWithBiometric(): AppUser?
 }

@@ -49,4 +49,5 @@ dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.android)
+    implementation(libs.androidx.biometric)
 }

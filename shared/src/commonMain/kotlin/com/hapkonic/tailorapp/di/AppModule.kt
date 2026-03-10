@@ -1,5 +1,6 @@
 package com.hapkonic.tailorapp.di
 
+import com.hapkonic.tailorapp.data.local.BiometricAuthService
 import com.hapkonic.tailorapp.data.local.DatabaseDriverFactory
 import com.hapkonic.tailorapp.data.local.LocalFirestoreService
 import com.hapkonic.tailorapp.data.local.LocalStorageService
@@ -83,6 +84,7 @@ val appModule = module {
         if (useFirebaseStorage) FirebaseStorageService() else LocalStorageService()
     }
     single { LocalAuthService() }
+    single { BiometricAuthService() }
 
     // ── Sync Engine ───────────────────────────────────────────────────────────
     single { ConflictResolver() }
@@ -137,7 +139,7 @@ val appModule = module {
     single { GetRevenueReportUseCase(get()) }
 
     // ── ViewModels ────────────────────────────────────────────────────────────
-    viewModel { LoginViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get(), get()) }
     viewModelOf(::CustomerListViewModel)
     viewModelOf(::CustomerFormViewModel)
     viewModel { (customerId: String) -> CustomerDetailViewModel(customerId, get(), get(), get()) }
