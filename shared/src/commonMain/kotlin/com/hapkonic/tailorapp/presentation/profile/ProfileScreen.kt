@@ -17,19 +17,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.hapkonic.tailorapp.domain.model.AppUser
 import com.hapkonic.tailorapp.domain.usecase.SignOutUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun ProfileScreen(currentUser: AppUser?) {
     val signOutUseCase: SignOutUseCase = koinInject()
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -75,9 +75,7 @@ fun ProfileScreen(currentUser: AppUser?) {
         Spacer(Modifier.height(32.dp))
 
         Button(
-            onClick = {
-                CoroutineScope(Dispatchers.Default).launch { signOutUseCase() }
-            },
+            onClick = { scope.launch { signOutUseCase() } },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error

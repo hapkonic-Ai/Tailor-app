@@ -14,27 +14,25 @@ import com.hapkonic.tailorapp.presentation.login.LoginScreen
  */
 @Composable
 fun AppNavGraph(currentUser: AppUser?) {
-    val initialScreen: Screen = when {
-        currentUser == null                 -> Screen.Login
-        currentUser.role == UserRole.TAILOR -> Screen.OrderList
-        else                                -> Screen.Dashboard
-    }
-    val navigator = rememberNavigator(initialScreen)
+    val navigator = rememberNavigator(Screen.Login)
 
-    // Auto-navigate to Login whenever the user signs out
+    // On logout: clear backstack so next login starts fresh
+    // On login: navigate to the right root screen
     LaunchedEffect(currentUser) {
-        if (currentUser == null && navigator.current !is Screen.Login) {
+        if (currentUser == null) {
             navigator.popToRoot()
             navigator.replace(Screen.Login)
+        } else if (navigator.current is Screen.Login) {
+            navigator.replace(
+                if (currentUser.role == UserRole.TAILOR) Screen.OrderList else Screen.Dashboard
+            )
         }
     }
 
     CompositionLocalProvider(LocalNavigator provides navigator) {
-        if (navigator.current is Screen.Login) {
-            LoginScreen(onSignedIn = {
-                val dest = if (currentUser?.role == UserRole.TAILOR) Screen.OrderList else Screen.Dashboard
-                navigator.replace(dest)
-            })
+        // Gate purely on auth state — no flash of stale screen on logout
+        if (currentUser == null) {
+            LoginScreen(onSignedIn = { /* navigation driven by LaunchedEffect above */ })
         } else {
             MainScaffold(currentUser = currentUser, navigator = navigator)
         }
